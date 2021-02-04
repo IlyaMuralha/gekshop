@@ -41,7 +41,6 @@ class UserProfileForm(UserChangeForm):
         model = User
         fields = ('first_name', 'last_name', 'avatar', 'username', 'email')
 
-    
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -49,5 +48,3 @@ class UserProfileForm(UserChangeForm):
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['email'].widget.attrs['readonly'] = True
         self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
-
-

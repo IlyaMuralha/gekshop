@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from authapp.models import User
+from basket.models import Basket
 
 
 def login(request):
@@ -18,9 +19,8 @@ def login(request):
                 return HttpResponseRedirect(reverse('index'))
     else:
         form = UserLoginForm()
-    context = {'title': 'Geekshop-вход','form': form}
+    context = {'title': 'Geekshop-вход', 'form': form}
     return render(request, 'authapp/login.html', context)
-
 
 
 def register(request):
@@ -31,7 +31,7 @@ def register(request):
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         form = UserRegisterForm()
-    context = {'title': 'Geekshop-регистрация','form': form}
+    context = {'title': 'Geekshop-регистрация', 'form': form}
     return render(request, 'authapp/register.html', context)
 
 
@@ -48,6 +48,9 @@ def profile(request):
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
-    context = {'title': 'Geekshop-profile', 'form': form}
+    context = {
+        'title': 'Geekshop-profile',
+        'form': form,
+        'basket': Basket.objects.all(),
+    }
     return render(request, 'authapp/profile.html', context)
-
