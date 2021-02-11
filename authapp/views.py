@@ -3,8 +3,8 @@ from django.contrib import auth
 from django.urls import reverse
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
-from authapp.models import User
 from basket.models import Basket
+from django.contrib import messages
 
 
 def login(request):
@@ -28,6 +28,7 @@ def register(request):
         form = UserRegisterForm(data=request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Вы успешно зарегистрировались!')
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         form = UserRegisterForm()
