@@ -49,9 +49,10 @@ def profile(request):
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
+    baskets = Basket.objects.filter(user=request.user)
     context = {
         'title': 'Geekshop-profile',
         'form': form,
-        'baskets': Basket.objects.filter(user=request.user),
+        'baskets': baskets,
     }
     return render(request, 'authapp/profile.html', context)
