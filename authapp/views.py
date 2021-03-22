@@ -6,6 +6,18 @@ from django.contrib.auth.decorators import login_required
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basket.models import Basket
 from django.contrib import messages
+from .models import User
+from .utils import send_verify_mail
+
+
+def verify(request, user_id, hash):
+    user = User.objects.get(pk=user_id)
+    if user.activation_key == hash and not user.is_activation_key_expired():
+        user.is_active = True
+        user.activation_key = None
+        user.save()
+        auth.login(request, user)
+        return render(request, 'authapp/verification.html')
 
 
 def login(request):
@@ -28,8 +40,9 @@ def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(data=request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
+            user = form.save()
+            send_verify_mail(user)
+            messages.success(request, 'Проверьте почту для завершения регистрации!')
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         form = UserRegisterForm()
