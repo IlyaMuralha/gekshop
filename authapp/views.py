@@ -2,7 +2,6 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basket.models import Basket
@@ -18,10 +17,7 @@ def verify(request, user_id, hash):
         user.activation_key = None
         user.save()
         auth.login(request, user)
-        # return HttpResponseRedirect(reverse('index'))
         return render(request, 'authapp/verification.html')
-
-    # raise Http404('')
 
 
 def login(request):
