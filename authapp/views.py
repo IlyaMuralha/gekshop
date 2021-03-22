@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
 from django.contrib import auth
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -11,12 +11,12 @@ from .utils import send_verify_mail
 
 
 def verify(request, user_id, hash):
-    user = User.objects.get(pk=user_id)
+    user = get_object_or_404(User, pk=user_id)
     if user.activation_key == hash and not user.is_activation_key_expired():
         user.is_active = True
         user.activation_key = None
         user.save()
-        auth.login(request, user)
+        auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return render(request, 'authapp/verification.html')
 
 
